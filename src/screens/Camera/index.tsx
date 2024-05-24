@@ -62,20 +62,7 @@ function Camera({ navigation }: ApplicationScreenProps) {
     }
   };
 
-  const handleLocationPermission = async () => {
-    const res = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-    if (res === RESULTS.GRANTED) {
-      location.requestPermission();
-    } else if (res === RESULTS.DENIED) {
-      const res2 = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-      if (res2 === RESULTS.GRANTED) {
-        location.requestPermission();
-      }
-    }
-  };
-
   useEffect(() => {
-    handleLocationPermission();
     handleCameraPermission();
   }, []);
 

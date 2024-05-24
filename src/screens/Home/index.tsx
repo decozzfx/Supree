@@ -3,23 +3,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { RootState } from "@/redux/AppStore";
 import { SafeScreen } from "@/components/template";
 import styles from "./styles";
-import {
-  TextL,
-  TextLG,
-  TextM,
-  TextS,
-  TextXL,
-} from "@/components/derivatives/text";
+import { TextL, TextM, TextS, TextXL } from "@/components/derivatives/text";
 import Gap from "@/components/generics/gap/Gap";
 import colors from "@/configs/colors";
 import Icon from "react-native-vector-icons/Ionicons";
 import {
-  CLockOrangeSvg,
   CalendarWhiteSvg,
-  ClockBlueSvg,
   ClockWhiteSvg,
   HospitalSvg,
-  LocationSvg,
   MedicineSvg,
   ProfilAddSvg,
   SearchSvg,
@@ -27,13 +18,39 @@ import {
 import { InputBorder } from "@/components/derivatives/input";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { IGetDokterTerdekatResponse } from "@/types/commonTypes";
+import Geolocation, {
+  GeolocationResponse,
+} from "@react-native-community/geolocation";
+import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
 
 function Home() {
   const dataUser = useSelector((state: RootState) => state.dataUser);
-  const [dokterTerdekat, setDokterTerdekat] = useState<
-    IGetDokterTerdekatResponse["response"]["dataResponse"] | null
-  >(null);
+
+  const [location, setLocation] = useState<GeolocationResponse>();
+
+  Geolocation.getCurrentPosition(
+    (loc) => setLocation(loc),
+    (error) => console.log(error),
+    {
+      distanceFilter: 10,
+      enableHighAccuracy: true,
+      interval: 10000,
+    }
+  );
+
+  const handleLocationPermission = async () => {
+    const res = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+    if (res === RESULTS.GRANTED) {
+    } else if (res === RESULTS.DENIED) {
+      const res2 = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+      if (res2 === RESULTS.GRANTED) {
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleLocationPermission();
+  }, []);
 
   return (
     <SafeScreen>
@@ -81,28 +98,10 @@ function Home() {
               style={{
                 flexDirection: "row",
               }}
-            >
-              <Image
-                source={require("@/theme/assets/images/dokter-imran.png")}
-                style={{
-                  width: 56,
-                  height: 56,
-                  resizeMode: "cover",
-                }}
-              />
-              <Gap width={12} />
-              <View style={{ justifyContent: "space-between" }}>
-                <TextL textStyle="bold" line={17.6} color={colors.text.white}>
-                  Dr. Imran Syahir
-                </TextL>
-                <TextM color={colors.text.greyLight}>Dokter Umum</TextM>
-              </View>
-            </View>
+            ></View>
 
             {/* Right Content */}
-            <View style={{ justifyContent: "center" }}>
-              <Icon name="chevron-forward" size={24} />
-            </View>
+            <View style={{ justifyContent: "center" }}></View>
           </View>
 
           {/* Lines */}
@@ -113,6 +112,10 @@ function Home() {
               paddingVertical: 8,
             }}
           />
+
+          <TextS color={colors.text.white}>
+            {JSON.stringify(location?.coords)}
+          </TextS>
 
           {/* Footer */}
           <View
@@ -143,19 +146,8 @@ function Home() {
 
         <Gap height={24} />
 
-        {/* Seach Doctor */}
-        <View>
-          <InputBorder
-            leftIcon={<SearchSvg />}
-            placeholder="Cari Dokter Spesialis"
-            value=""
-          />
-        </View>
-
-        <Gap height={24} />
-
         {/* Category */}
-        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+        {/* <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
           <TouchableOpacity style={{ alignItems: "center" }}>
             <View
               style={{
@@ -198,97 +190,9 @@ function Home() {
               Rumah Sakit
             </TextM>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
-        <Gap height={24} />
-        {/* Dokter Terdekat */}
-        <TextL textStyle="bold" line={17}>
-          Dokter Terdekat
-        </TextL>
         <Gap height={16} />
-
-        {dokterTerdekat && (
-          <TouchableOpacity style={styles.cardDokterTerderkat}>
-            {/* Header */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              {/* Left Contenct */}
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <Image
-                  source={require("@/theme/assets/images/dokter-imran.png")}
-                  style={{
-                    width: 56,
-                    height: 56,
-                    resizeMode: "cover",
-                  }}
-                />
-                <Gap width={12} />
-                <View style={{ justifyContent: "space-between" }}>
-                  <TextL textStyle="bold" line={17.6}>
-                    {dokterTerdekat?.nama}
-                  </TextL>
-                  <TextM color={colors.text.grey}>{dokterTerdekat.jenis}</TextM>
-                </View>
-              </View>
-
-              {/* Right Content */}
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "row",
-                }}
-              >
-                <LocationSvg />
-                <Gap width={8} />
-                <TextM>{dokterTerdekat.jarak}</TextM>
-              </View>
-            </View>
-
-            {/* Lines */}
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "rgba(245, 245, 245, 1)",
-                paddingVertical: 8,
-              }}
-            />
-
-            {/* Footer */}
-            <View
-              style={{
-                paddingTop: 16,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <CLockOrangeSvg />
-                <Gap width={8} />
-                <TextS>4,8 (120 Reviews)</TextS>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingRight: 20,
-                }}
-              >
-                <ClockBlueSvg />
-                <Gap width={8} />
-                <TextS>{dokterTerdekat.jadwal}</TextS>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
       </ScrollView>
     </SafeScreen>
   );
