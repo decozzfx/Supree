@@ -1,4 +1,4 @@
-package com.nexa
+package com.supree
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
