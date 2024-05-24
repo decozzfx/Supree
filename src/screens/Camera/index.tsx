@@ -5,22 +5,23 @@ import {
   Camera as CameraVision,
   useLocationPermission,
   useCameraDevice,
-  useCameraFormat,
 } from "react-native-vision-camera";
 import styles from "./styles";
-import Icon from "react-native-vector-icons/Ionicons";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TextL } from "@/components/derivatives/text";
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import sizes from "@/configs/sizes";
-import { ApplicationScreenProps, routesEnum } from "@/navigators/routes";
+import { routesEnum } from "@/navigators/routes";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { BottomTabParamList } from "@/navigators/mainTab";
 
-function Camera({ navigation }: ApplicationScreenProps) {
+function Camera({
+  navigation,
+}: NativeStackScreenProps<BottomTabParamList, routesEnum.Camera>) {
   // const camera = useRef<Camera>(null);
   const cameraPermission = CameraVision.getCameraPermissionStatus();
   const isGrantedPermission = cameraPermission === "granted";
   const location = useLocationPermission();
-  console.log("🚀 ~ Camera ~ location:", location);
   let device = useCameraDevice("front");
   const cameraRef = useRef<CameraVision>(null);
   const [cameraGranted, setCameraGranted] = useState(false);

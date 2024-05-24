@@ -20,7 +20,7 @@ export type BottomTabParamList = {
   Home: undefined;
   Jadwal: undefined;
   Camera: undefined;
-  Profil: undefined;
+  Profil: { photoPath?: string };
 };
 
 const icons: any = {
@@ -97,6 +97,7 @@ function MyTabBar({ state, descriptors, navigation }: any) {
                 flexDirection: "row",
                 alignContent: "center",
               }}
+              key={route.key}
             >
               {icons[route.name]}
               {isFocused && (

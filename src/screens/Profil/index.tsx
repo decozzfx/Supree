@@ -4,19 +4,19 @@ import { useQuery } from "@tanstack/react-query";
 import { ActivityIndicator } from "react-native";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/Ionicons";
+import { RootStackNavigationTypes, routesEnum } from "@/navigators/routes";
 import {
-  ApplicationScreenProps,
-  RootStackNavigationTypes,
-  routesEnum,
-} from "@/navigators/routes";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { useEffect, useMemo, useState } from "react";
 import sizes from "@/configs/sizes";
+import { BottomTabParamList } from "@/navigators/mainTab";
 
 function Profile({
   navigation,
   route,
-}: NativeStackScreenProps<RootStackNavigationTypes, routesEnum.Profil>) {
+}: NativeStackScreenProps<BottomTabParamList, routesEnum.Profil>) {
   const [photo, setPhoto] = useState<string>();
 
   useEffect(() => {

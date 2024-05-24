@@ -1,12 +1,17 @@
-import { View, Image, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { RootState } from "@/redux/AppStore";
 import { SafeScreen } from "@/components/template";
 import styles from "./styles";
-import { TextL, TextM, TextS, TextXL } from "@/components/derivatives/text";
+import { TextL, TextS, TextXL } from "@/components/derivatives/text";
 import Gap from "@/components/generics/gap/Gap";
 import colors from "@/configs/colors";
-import Icon from "react-native-vector-icons/Ionicons";
 import {
   CalendarWhiteSvg,
   ClockWhiteSvg,
@@ -15,41 +20,32 @@ import {
   ProfilAddSvg,
   SearchSvg,
 } from "@/theme/svgs";
-import { InputBorder } from "@/components/derivatives/input";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import Geolocation, {
-  GeolocationResponse,
-} from "@react-native-community/geolocation";
-import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
+import { useCallback, useEffect, useState } from "react";
+import GetLocation from "react-native-get-location";
 
 function Home() {
   const dataUser = useSelector((state: RootState) => state.dataUser);
 
-  const [location, setLocation] = useState<GeolocationResponse>();
+  const [location, setLocation] = useState<any>();
 
-  Geolocation.getCurrentPosition(
-    (loc) => setLocation(loc),
-    (error) => console.log(error),
-    {
-      distanceFilter: 10,
+  const getOneTimeLocation = useCallback(() => {
+    GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
-      interval: 10000,
-    }
-  );
-
-  const handleLocationPermission = async () => {
-    const res = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-    if (res === RESULTS.GRANTED) {
-    } else if (res === RESULTS.DENIED) {
-      const res2 = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-      if (res2 === RESULTS.GRANTED) {
-      }
-    }
-  };
+      timeout: 60000,
+    })
+      .then((location) => {
+        setLocation(location);
+        console.log(location);
+      })
+      .catch((error) => {
+        const { code, message } = error;
+        console.warn(code, message);
+      });
+  }, []);
 
   useEffect(() => {
-    handleLocationPermission();
+    getOneTimeLocation();
   }, []);
 
   return (
@@ -113,10 +109,6 @@ function Home() {
             }}
           />
 
-          <TextS color={colors.text.white}>
-            {JSON.stringify(location?.coords)}
-          </TextS>
-
           {/* Footer */}
           <View
             style={{
@@ -145,6 +137,14 @@ function Home() {
         </TouchableOpacity>
 
         <Gap height={24} />
+
+        {location ? (
+          <TextL color={colors.text.black}>
+            {JSON.stringify(location, null, 2)}
+          </TextL>
+        ) : (
+          <ActivityIndicator size="large" color="#0000ff" />
+        )}
 
         {/* Category */}
         {/* <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
