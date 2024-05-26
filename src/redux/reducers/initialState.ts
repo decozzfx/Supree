@@ -1,6 +1,18 @@
-import { ILoginResponseData, IUserData } from "@/types/commonTypes";
+import { IUserData } from "@/types/commonTypes";
 
 export const initialStateUserData: IUserData = {
-  session: null,
-  user: null,
+  user: {
+    email: "",
+    name: "",
+    photo: "",
+    familyName: "",
+    givenName: "",
+    id: "",
+  },
+  idToken: null,
+  serverAuthCode: null,
+  scopes: [],
+};
+export const initialStateHistoryData = {
+  data: [],
 };

@@ -50,4 +50,14 @@ export default StyleSheet.create({
     elevation: 1,
     marginBottom: 16,
   },
+  cardRiwayat: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderRadius: 16,
+    backgroundColor: colors.background.gray2,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    elevation: 2,
+    marginBottom: 12,
+  },
 });

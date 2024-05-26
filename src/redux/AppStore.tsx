@@ -2,6 +2,7 @@ import React from "react";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { Provider, useDispatch } from "react-redux";
 import { reducer as dataUserReducer } from "./reducers/DataUserReducer";
+import { reducer as HistoryReducer } from "./reducers/HistoryReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -27,14 +28,23 @@ const persistConfigDatauser = {
   key: "persistConfigDataUser",
   storage: AsyncStorage,
 };
+const persistConfigDataHistory = {
+  key: "persistConfigHistoryPresensi",
+  storage: AsyncStorage,
+};
 
 const persistedDataUserReducer = persistReducer(
   persistConfigDatauser,
   dataUserReducer
 );
+const persistedHistoryReducer = persistReducer(
+  persistConfigDataHistory,
+  HistoryReducer
+);
 
 const combinedReducers = combineReducers({
   dataUser: persistedDataUserReducer,
+  history: persistedHistoryReducer,
 });
 
 export const store = configureStore({

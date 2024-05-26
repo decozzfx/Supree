@@ -62,10 +62,10 @@ export interface IUserData {
   idToken: string | null;
   scopes?: string[];
   serverAuthCode: string | null;
-  user: User;
+  user: IUser;
 }
 
-interface User {
+export interface IUser {
   email: string;
   familyName: string | null;
   givenName: string | null;

@@ -86,7 +86,7 @@ android {
         versionName "1.0"
     }
     signingConfigs {
-        yarn debug {
+        debug {
             storeFile file('decoz123.keystore')
             storePassword 'password123'
             keyAlias 'decoz'
