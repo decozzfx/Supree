@@ -1,5 +1,6 @@
-import { ILoginResponseData } from "@/types/commonTypes";
+import { ILoginResponseData, IUserData } from "@/types/commonTypes";
 
-export const initialStateUserData: ILoginResponseData = {
-  token: "",
+export const initialStateUserData: IUserData = {
+  session: null,
+  user: null,
 };

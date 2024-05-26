@@ -22,21 +22,29 @@ import {
 } from "@/theme/svgs";
 import { useSelector } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
-import GetLocation from "react-native-get-location";
+import GetLocation, { Location } from "react-native-get-location";
 
 function Home() {
   const dataUser = useSelector((state: RootState) => state.dataUser);
 
-  const [location, setLocation] = useState<any>();
+  const [location, setLocation] = useState<Location>();
+  const isLat = location?.latitude?.toString()?.substring(0, 5) == "-7.75";
+  console.log("🚀 ~ Home ~ isLat:", isLat);
+
+  const areaLongitude = useCallback(() => {
+    if (location?.longitude && location?.latitude) {
+      const isLong =
+        location?.longitude?.toString()?.substring(0, 6) == "110.43";
+    }
+  }, [location]);
 
   const getOneTimeLocation = useCallback(() => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
-      timeout: 60000,
+      timeout: 10000,
     })
       .then((location) => {
         setLocation(location);
-        console.log(location);
       })
       .catch((error) => {
         const { code, message } = error;
@@ -45,7 +53,11 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    getOneTimeLocation();
+    const interval = setInterval(() => {
+      getOneTimeLocation();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (

@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "android-release": "react-native run-android --variant release",
+    "android": "SET ENVFILE=.env && react-native run-android",
+    "android-release": "SET ENVFILE=.env && react-native run-android --variant release",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
@@ -28,6 +28,7 @@
     "@tanstack/react-query": "^5.37.1",
     "@types/redux-logger": "^3.0.13",
     "dayjs": "^1.11.11",
+    "eslint-plugin-react-hooks": "next",
     "i18next": "^23.11.2",
     "ky": "^1.2.4",
     "moti": "^0.29.0",

@@ -57,3 +57,19 @@ interface Metadata {
   status: number;
   message: string;
 }
+
+export interface IUserData {
+  idToken: string | null;
+  scopes?: string[];
+  serverAuthCode: string | null;
+  user: User;
+}
+
+interface User {
+  email: string;
+  familyName: string | null;
+  givenName: string | null;
+  id: string;
+  name: string | null;
+  photo: string | null;
+}

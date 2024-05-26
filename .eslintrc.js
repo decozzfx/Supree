@@ -40,13 +40,12 @@ module.exports = {
     },
   },
   rules: {
+    "@typescript-eslint/no-unused-vars": "error",
+    "global-require": 0,
     "react-hooks/exhaustive-deps": [
       "error",
       { additionalHooks: "(useMemoOne)" },
     ],
-    "@typescript-eslint/no-unused-vars": "error",
-    "global-require": 0,
-    "react-hooks/exhaustive-deps": "off",
     quotes: ["error", "single"],
     "object-curly-spacing": ["error", "always"],
     "array-bracket-spacing": ["error", "never"],

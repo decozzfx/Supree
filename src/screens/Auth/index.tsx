@@ -1,8 +1,6 @@
 import { Image, View } from "react-native";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTheme } from "@/theme";
 
-import { UsernameSvg, PasswordSvg } from "@/theme/svgs";
 import { SafeScreen } from "@/components/template";
 import { routesEnum, type ApplicationScreenProps } from "@/navigators/routes";
 import {
@@ -12,7 +10,6 @@ import {
   TextM,
 } from "@/components/derivatives/text";
 import Gap from "@/components/generics/gap/Gap";
-import { ButtonFull } from "@/components/derivatives/button";
 import { CommonActions } from "@react-navigation/native";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,11 +17,26 @@ import { RootState } from "@/redux/AppStore";
 import { actions as actionDataUser } from "@/redux/reducers/DataUserReducer";
 import Logo from "@/theme/assets/images/app_icon.png";
 import { PERMISSIONS, RESULTS, check, request } from "react-native-permissions";
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import { WEB_CLIENT_ID, CLIENT_ID } from "@/configs/config";
 
 function Auth({ navigation }: ApplicationScreenProps) {
   const { layout } = useTheme();
   const dispatch = useDispatch();
   const dataUser = useSelector((state: RootState) => state.dataUser);
+
+  GoogleSignin.configure({
+    scopes: [
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email",
+    ],
+    webClientId: WEB_CLIENT_ID,
+    offlineAccess: false,
+  });
 
   const navigateToHome = () => {
     navigation.dispatch(
@@ -49,10 +61,10 @@ function Auth({ navigation }: ApplicationScreenProps) {
   };
 
   useEffect(() => {
-    if (dataUser.token) {
+    if (dataUser.user?.id) {
       navigateToHome();
     }
-  }, [dataUser.token, navigation]);
+  }, [navigation, dataUser.user?.id]);
 
   useEffect(() => {
     handleLocationPermission();
@@ -75,8 +87,34 @@ function Auth({ navigation }: ApplicationScreenProps) {
             Silakan login dengan akun anda
           </TextBase>
 
-          <ButtonFull onPress={navigateToHome}>login</ButtonFull>
-
+          <Gap height={50} />
+          <GoogleSigninButton
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Dark}
+            onPress={async () => {
+              try {
+                await GoogleSignin.hasPlayServices();
+                const userInfo = await GoogleSignin.signIn();
+                if (userInfo) {
+                  dispatch(actionDataUser.setUserData(userInfo));
+                  navigateToHome();
+                }
+              } catch (error: any) {
+                console.log("🚀 ~ onPress={ ~ error:", JSON.stringify(error));
+                if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                  // user cancelled the login flow
+                } else if (error.code === statusCodes.IN_PROGRESS) {
+                  // operation (e.g. sign in) is in progress already
+                } else if (
+                  error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE
+                ) {
+                  // play services not available or outdated
+                } else {
+                  // some other error happened
+                }
+              }
+            }}
+          />
           <Gap height={50} />
         </View>
       </SafeScreen>
