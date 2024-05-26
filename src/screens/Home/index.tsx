@@ -37,8 +37,8 @@ function Home() {
   const areaLongitude = useMemo(() => {
     if (location?.longitude && location?.latitude) {
       const isLong =
-        location?.longitude?.toString()?.substring(0, 6) == "110.43";
-      const isLat = location?.latitude?.toString()?.substring(0, 5) == "-7.75";
+        location?.longitude?.toString()?.substring(0, 6) == "111.48";
+      const isLat = location?.latitude?.toString()?.substring(0, 5) == "-7.62";
       return isLong && isLat;
     }
   }, [location]);
@@ -46,7 +46,7 @@ function Home() {
   const getOneTimeLocation = useCallback(() => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
-      timeout: 4000,
+      timeout: 5000,
     })
       .then((location) => {
         setLocation(location);
@@ -65,12 +65,20 @@ function Home() {
       dispatch(
         actionHistory.setHistoryData({
           name: dataUser.user.name,
-          type: "Absen Masuk",
+          type: "Masuk",
           time: dayjs().format("HH:mm"),
           date: dayjs().locale("id").format("dddd, DD MMM"),
         })
       );
     } else {
+      dispatch(
+        actionHistory.setHistoryData({
+          name: dataUser.user.name,
+          type: "Pulang",
+          time: dayjs().format("HH:mm"),
+          date: dayjs().locale("id").format("dddd, DD MMM"),
+        })
+      );
     }
   }, []);
 
@@ -79,16 +87,19 @@ function Home() {
       getOneTimeLocation();
     }, 10000);
 
-    if (areaLongitude === false) return setIsInvalidLocaltionModal(true);
-
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (areaLongitude === false && location)
+      return setIsInvalidLocaltionModal(true);
+  }, [location, areaLongitude]);
 
   const invalidLocationModal = useMemo(() => {
     return (
       <ModalCenter
         style={{ borderRadius: 16 }}
-        backPress={() => setIsInvalidLocaltionModal(false)}
+        backPress={() => {}}
         isActive={isInvalidLocaltionModal}
       >
         <View style={{ paddingVertical: 50, paddingHorizontal: 16 }}>
@@ -108,7 +119,7 @@ function Home() {
         </View>
       </ModalCenter>
     );
-  }, []);
+  }, [isInvalidLocaltionModal]);
 
   const gpsActiveModal = useMemo(() => {
     return (
@@ -275,7 +286,10 @@ function Home() {
                 Presensi Masuk
               </TextM>
             </TouchableOpacity>
-            <TouchableOpacity style={{ alignItems: "center" }}>
+            <TouchableOpacity
+              onPress={() => Presensi("PULANG")}
+              style={{ alignItems: "center" }}
+            >
               <View
                 style={{
                   backgroundColor: colors.background.gray2,
@@ -333,6 +347,7 @@ function Home() {
     isGpsActiveModal,
     isInvalidLocaltionModal,
     history,
+    areaLongitude,
   ]);
 
   return renderMain;
