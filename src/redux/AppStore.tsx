@@ -62,7 +62,7 @@ export type AppDispatch = typeof store.dispatch;
 
 export const useAppDispatch: () => AppDispatch = useDispatch;
 
-const loadDeviceInfo = useCallback(async () => {
+const loadDeviceInfo = async () => {
   const userAgent = {
     os: await DeviceInfo.getSystemName(),
     osVer: await DeviceInfo.getSystemVersion(),
@@ -96,18 +96,15 @@ const loadDeviceInfo = useCallback(async () => {
       };
     })
     .catch(() => {});
-}, []);
+};
 
-const onBeforeLift = useCallback(
-  (stores: any) => async () => {
-    const ua = await loadDeviceInfo();
-    stores.dispatch(actionBootReducer.setUserAgent(ua));
-    if (__DEV__) {
-      console.log("ua>>>", ua);
-    }
-  },
-  [loadDeviceInfo]
-);
+const onBeforeLift = (stores: any) => async () => {
+  const ua = await loadDeviceInfo();
+  stores.dispatch(actionBootReducer.setUserAgent(ua));
+  if (__DEV__) {
+    console.log("ua>>>", ua);
+  }
+};
 
 export function withAppStore<T>(WrappedComponent: React.FC<T>) {
   const ComponentWithStore = (props: T) => {

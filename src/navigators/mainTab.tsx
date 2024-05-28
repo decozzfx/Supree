@@ -48,6 +48,7 @@ function MyTabBar({ state, descriptors, navigation }: any) {
         borderTopWidth: 1,
         justifyContent: "space-between",
       }}
+      key={state.index}
     >
       {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];
@@ -99,7 +100,7 @@ function MyTabBar({ state, descriptors, navigation }: any) {
                 flexDirection: "row",
                 alignContent: "center",
               }}
-              key={route.key}
+              key={index}
             >
               {icons[route.name]}
               {isFocused && (
@@ -135,10 +136,18 @@ const MainTab: React.FC<IProps> = (props) => {
         }}
         tabBar={(props) => <MyTabBar {...props} />}
       >
-        <Tab.Screen name={routesEnum.Home} component={Home} />
+        <Tab.Screen
+          key={routesEnum.Home}
+          name={routesEnum.Home}
+          component={Home}
+        />
         {/* <Tab.Screen name={routesEnum.Jadwal} component={Jadwal} />
         <Tab.Screen name={routesEnum.Camera} component={Camera} /> */}
-        <Tab.Screen name={routesEnum.About} component={About} />
+        <Tab.Screen
+          key={routesEnum.About}
+          name={routesEnum.About}
+          component={About}
+        />
         {/* <Tab.Screen name={routesEnum.} component={} />
           <Tab.Screen name={routesEnum.} component={} {...props} /> */}
         {/* <Tab.Screen

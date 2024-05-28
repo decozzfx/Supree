@@ -1,4 +1,8 @@
-import { IUserData, IInitialStateBootReducer } from "@/types/commonTypes";
+import {
+  IUserData,
+  IInitialStateBootReducer,
+  IHistory,
+} from "@/types/commonTypes";
 
 export const initialStateUserData: IUserData = {
   user: {
@@ -14,7 +18,7 @@ export const initialStateUserData: IUserData = {
   scopes: [],
 };
 
-export const initialStateHistoryData = {
+export const initialStateHistoryData: Record<"data", IHistory[]> = {
   data: [],
 };
 

@@ -138,3 +138,10 @@ export interface IInitialStateBootReducer {
   errorStatus: string;
   errorMessage: string;
 }
+
+export interface IHistory {
+  date: string;
+  name: string;
+  time: string;
+  type: string;
+}

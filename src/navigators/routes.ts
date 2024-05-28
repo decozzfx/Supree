@@ -16,8 +16,10 @@ export enum routesEnum {
 
 export type RootStackNavigationTypes = {
   [routesEnum.Auth]: undefined;
+  [routesEnum.Home]: undefined;
   [routesEnum.Pesan]: undefined;
   [routesEnum.About]: undefined;
+  [routesEnum.Jadwal]: undefined;
   [routesEnum.Profil]: { photoPath?: string };
 
   // Bottom Tab Menu

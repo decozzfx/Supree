@@ -20,9 +20,10 @@ import ModalCenter from "@/components/generics/modal/center";
 import Icon from "react-native-vector-icons/Ionicons";
 import dayjs from "dayjs";
 import { actions as actionHistory } from "@/redux/reducers/HistoryReducer";
+import { ApplicationScreenProps } from "@/navigators/routes";
 require("dayjs/locale/id");
 
-function Home() {
+function Home({ navigation }: ApplicationScreenProps) {
   const dispatch = useDispatch();
   const dataUser = useSelector((state: RootState) => state.dataUser);
   const history = useSelector((state: RootState) => state.history);
@@ -32,8 +33,8 @@ function Home() {
   const [isInvalidLocaltionModal, setIsInvalidLocaltionModal] =
     useState<boolean>(false);
   const [isGpsActiveModal, setIsGpsActiveModal] = useState<boolean>(false);
-  const [IsLoginTime, setIsLoginTime] = useState<boolean>(false);
-  const [IsLogoutTime, setIsLogoutTime] = useState<boolean>(false);
+  const [IsLoginTime, setIsLoginTime] = useState<boolean>(true);
+  const [IsLogoutTime, setIsLogoutTime] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const areaLongitude = useMemo(() => {
@@ -44,11 +45,6 @@ function Home() {
       return isLong && isLat;
     }
   }, [location]);
-
-  const disabledButtonLogin = useMemo(() => {
-    const loginTime = dayjs().format("HH:mm");
-  }, [areaLongitude]);
-  const disabledButtonLogout = useMemo(() => {}, [areaLongitude]);
 
   const getOneTimeLocation = useCallback(() => {
     GetLocation.getCurrentPosition({
@@ -67,11 +63,31 @@ function Home() {
       });
   }, []);
 
+  const isLoggetInToday = useMemo(() => {
+    return (
+      history.data?.find(
+        (data) =>
+          data.date === dayjs().locale("id").format("dddd, DD MMM") &&
+          data.type === "Masuk"
+      ) ?? false
+    );
+  }, [history]);
+
+  const isLoggetOutToday = useMemo(() => {
+    return (
+      history.data?.find(
+        (data) =>
+          data.date === dayjs().locale("id").format("dddd, DD MMM") &&
+          data.type === "Pulang"
+      ) ?? false
+    );
+  }, [history]);
+
   const Presensi = useCallback((type: "MASUK" | "PULANG") => {
     if (type === "MASUK") {
       dispatch(
         actionHistory.setHistoryData({
-          name: dataUser.user.name,
+          name: dataUser.user.name as string,
           type: "Masuk",
           time: dayjs().format("HH:mm"),
           date: dayjs().locale("id").format("dddd, DD MMM"),
@@ -80,7 +96,7 @@ function Home() {
     } else {
       dispatch(
         actionHistory.setHistoryData({
-          name: dataUser.user.name,
+          name: dataUser.user.name as string,
           type: "Pulang",
           time: dayjs().format("HH:mm"),
           date: dayjs().locale("id").format("dddd, DD MMM"),
@@ -105,13 +121,11 @@ function Home() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIsLoginTime(dayjs().hour() >= 6 && dayjs().hour() <= 9);
-      setIsLogoutTime(
-        dayjs().minute() >= 30 && dayjs().hour() >= 13 && dayjs().hour() <= 18
-      );
+      setIsLogoutTime(dayjs().hour() >= 13 && dayjs().hour() < 18);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [history]);
+  }, []);
 
   const invalidLocationModal = useMemo(() => {
     return (
@@ -166,14 +180,6 @@ function Home() {
   }, [errorMessage, isGpsActiveModal]);
 
   const renderMain = useMemo(() => {
-    if (!location)
-      return (
-        <ActivityIndicator
-          style={{ marginTop: "50%" }}
-          size="large"
-          color="#0000ff"
-        />
-      );
     return (
       <SafeScreen>
         <View style={styles.container}>
@@ -227,7 +233,7 @@ function Home() {
                 <Gap width={8} />
                 <TextM color={colors.text.white}>Jam Presensi Masuk :</TextM>
                 <Gap width={6} />
-                <TextM color={colors.text.white}>08:00 - 13:30</TextM>
+                <TextM color={colors.text.white}>06:00 - 09:00</TextM>
               </View>
 
               <Gap height={8} />
@@ -295,51 +301,63 @@ function Home() {
           <Gap height={24} />
 
           {/* Category */}
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-around" }}
-          >
-            <TouchableOpacity
-              onPress={() => Presensi("MASUK")}
-              style={{ alignItems: "center" }}
-              disabled={!IsLoginTime}
+          {!location ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-around" }}
             >
-              <View
-                style={{
-                  backgroundColor: colors.background.gray2,
-                  padding: 14,
-                  borderRadius: 100,
-                  elevation: 2,
-                }}
+              <TouchableOpacity
+                onPress={() => Presensi("MASUK")}
+                style={{ alignItems: "center" }}
+                disabled={!IsLoginTime || Boolean(isLoggetInToday)}
               >
-                <Icon name="log-in" size={40} color={colors.base.background} />
-              </View>
-              <Gap height={8} />
-              <TextM size={15} color={colors.text.grey}>
-                Presensi Masuk
-              </TextM>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => Presensi("PULANG")}
-              style={{ alignItems: "center" }}
-              disabled={!IsLogoutTime}
-            >
-              <View
-                style={{
-                  backgroundColor: colors.background.gray2,
-                  padding: 14,
-                  borderRadius: 100,
-                  elevation: 2,
-                }}
+                <View
+                  style={{
+                    backgroundColor: colors.background.gray2,
+                    padding: 14,
+                    borderRadius: 100,
+                    elevation: 2,
+                  }}
+                >
+                  <Icon
+                    name="log-in"
+                    size={40}
+                    color={colors.base.background}
+                  />
+                </View>
+                <Gap height={8} />
+                <TextM size={15} color={colors.text.grey}>
+                  Presensi Masuk
+                </TextM>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => Presensi("PULANG")}
+                style={{ alignItems: "center" }}
+                disabled={!IsLogoutTime || Boolean(isLoggetOutToday)}
               >
-                <Icon name="log-out" size={40} color={colors.base.background} />
-              </View>
-              <Gap height={8} />
+                <View
+                  style={{
+                    backgroundColor: colors.background.gray2,
+                    padding: 14,
+                    borderRadius: 100,
+                    elevation: 2,
+                  }}
+                >
+                  <Icon
+                    name="log-out"
+                    size={40}
+                    color={colors.base.background}
+                  />
+                </View>
+                <Gap height={8} />
 
-              <TextM size={15} color={colors.text.grey}>
-                Presensi Pulang
-              </TextM>
-            </TouchableOpacity>
-          </View>
+                <TextM size={15} color={colors.text.grey}>
+                  Presensi Pulang
+                </TextM>
+              </TouchableOpacity>
+            </View>
+          )}
 
           <Gap height={24} />
           <View>
