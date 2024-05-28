@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { initialStateUserData } from "./initialState";
-import { ILoginResponseData, IUserData } from "@/types/commonTypes";
+import { IUserData } from "@/types/commonTypes";
 
 const DataUser = createSlice({
   name: "DataUser",

@@ -42,7 +42,7 @@ function Auth({ navigation }: ApplicationScreenProps) {
     navigation.dispatch(
       CommonActions.reset({
         index: 1,
-        routes: [{ name: routesEnum.Home }],
+        routes: [{ name: routesEnum.MainDrawer }],
       })
     );
   };

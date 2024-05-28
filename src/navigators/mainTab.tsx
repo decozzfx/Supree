@@ -4,7 +4,7 @@ import { Svg } from "react-native-svg";
 import type { DrawerScreenProps } from "@react-navigation/drawer";
 import { DrawerParamList } from "./mainDrawer";
 import { routesEnum } from "@/navigators/routes";
-import { Camera, Home, Jadwal, Profil } from "@/screens";
+import { About, Camera, Home, Jadwal, Profil } from "@/screens";
 import { Button, TouchableOpacity, View } from "react-native";
 import { TextBase, TextM } from "@/components/derivatives/text";
 import colors from "@/configs/colors";
@@ -21,6 +21,7 @@ export type BottomTabParamList = {
   Jadwal: undefined;
   Camera: undefined;
   Profil: { photoPath?: string };
+  About: undefined;
 };
 
 const icons: any = {
@@ -28,6 +29,7 @@ const icons: any = {
   Jadwal: <JadwalIconSvg />,
   Camera: <PesanIconSvg />,
   Profil: <UsernameSvg />,
+  About: <UsernameSvg />,
 };
 
 type IProps = DrawerScreenProps<DrawerParamList, routesEnum.MainBottomTabMenu>;
@@ -134,9 +136,9 @@ const MainTab: React.FC<IProps> = (props) => {
         tabBar={(props) => <MyTabBar {...props} />}
       >
         <Tab.Screen name={routesEnum.Home} component={Home} />
-        <Tab.Screen name={routesEnum.Jadwal} component={Jadwal} />
-        <Tab.Screen name={routesEnum.Camera} component={Camera} />
-        <Tab.Screen name={routesEnum.Profil} component={Profil} />
+        {/* <Tab.Screen name={routesEnum.Jadwal} component={Jadwal} />
+        <Tab.Screen name={routesEnum.Camera} component={Camera} /> */}
+        <Tab.Screen name={routesEnum.About} component={About} />
         {/* <Tab.Screen name={routesEnum.} component={} />
           <Tab.Screen name={routesEnum.} component={} {...props} /> */}
         {/* <Tab.Screen

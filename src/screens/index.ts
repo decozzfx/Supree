@@ -3,3 +3,4 @@ export { default as Home } from "./Home";
 export { default as Jadwal } from "./Jadwal";
 export { default as Camera } from "./Camera";
 export { default as Profil } from "./Profil";
+export { default as About } from "./About";

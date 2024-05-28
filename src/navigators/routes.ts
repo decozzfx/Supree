@@ -9,6 +9,7 @@ export enum routesEnum {
   Pesan = "Pesan",
   Camera = "Camera",
   Profil = "Profil",
+  About = "About",
   MainBottomTabMenu = "MainBottomTabMenu",
   MainDrawer = "MainDrawer",
 }
@@ -16,6 +17,7 @@ export enum routesEnum {
 export type RootStackNavigationTypes = {
   [routesEnum.Auth]: undefined;
   [routesEnum.Pesan]: undefined;
+  [routesEnum.About]: undefined;
   [routesEnum.Profil]: { photoPath?: string };
 
   // Bottom Tab Menu

@@ -9388,6 +9388,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-device-info@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "react-native-device-info@npm:11.1.0"
+  peerDependencies:
+    react-native: "*"
+  checksum: 272cab82573933a1f3a9bc394b82a387ccbdf9fbef131fc1f04b8ff78b36f581931b5c643f5aa278f28577cbc320ef2ac588cafdb73292e9b0cf4427d54c44ce
+  languageName: node
+  linkType: hard
+
 "react-native-dropdown-picker@npm:^5.4.6":
   version: 5.4.6
   resolution: "react-native-dropdown-picker@npm:5.4.6"
@@ -10793,6 +10802,7 @@ __metadata:
     react-i18next: ^14.1.0
     react-native: 0.73.7
     react-native-config: ^1.5.1
+    react-native-device-info: ^11.1.0
     react-native-dropdown-picker: ^5.4.6
     react-native-fast-image: ^8.6.3
     react-native-gesture-handler: ^2.16.0

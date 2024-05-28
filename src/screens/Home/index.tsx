@@ -32,16 +32,23 @@ function Home() {
   const [isInvalidLocaltionModal, setIsInvalidLocaltionModal] =
     useState<boolean>(false);
   const [isGpsActiveModal, setIsGpsActiveModal] = useState<boolean>(false);
+  const [IsLoginTime, setIsLoginTime] = useState<boolean>(false);
+  const [IsLogoutTime, setIsLogoutTime] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const areaLongitude = useMemo(() => {
     if (location?.longitude && location?.latitude) {
       const isLong =
-        location?.longitude?.toString()?.substring(0, 6) == "111.48";
+        location?.longitude?.toString()?.substring(0, 8) == "111.4820";
       const isLat = location?.latitude?.toString()?.substring(0, 5) == "-7.62";
       return isLong && isLat;
     }
   }, [location]);
+
+  const disabledButtonLogin = useMemo(() => {
+    const loginTime = dayjs().format("HH:mm");
+  }, [areaLongitude]);
+  const disabledButtonLogout = useMemo(() => {}, [areaLongitude]);
 
   const getOneTimeLocation = useCallback(() => {
     GetLocation.getCurrentPosition({
@@ -95,6 +102,17 @@ function Home() {
       return setIsInvalidLocaltionModal(true);
   }, [location, areaLongitude]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsLoginTime(dayjs().hour() >= 6 && dayjs().hour() <= 9);
+      setIsLogoutTime(
+        dayjs().minute() >= 30 && dayjs().hour() >= 13 && dayjs().hour() <= 18
+      );
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [history]);
+
   const invalidLocationModal = useMemo(() => {
     return (
       <ModalCenter
@@ -114,7 +132,7 @@ function Home() {
           </TextXL>
           <Gap height={16} />
           <TextL align="center" color={colors.text.black50} textAlign="right">
-            Anda harus berada di kantor untuk bisa presensi
+            Anda harus berada di kantor untuk bisa melakukan presensi
           </TextL>
         </View>
       </ModalCenter>
@@ -207,9 +225,22 @@ function Home() {
               >
                 <CLockOrangeSvg />
                 <Gap width={8} />
-                <TextM color={colors.text.white}>Jam Masuk :</TextM>
+                <TextM color={colors.text.white}>Jam Presensi Masuk :</TextM>
                 <Gap width={6} />
                 <TextM color={colors.text.white}>08:00 - 13:30</TextM>
+              </View>
+
+              <Gap height={8} />
+              <View
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                <CLockOrangeSvg />
+                <Gap width={8} />
+                <TextM color={colors.text.white}>Jam Presensi Pulang :</TextM>
+                <Gap width={6} />
+                <TextM color={colors.text.white}>13:00 - 17:30</TextM>
               </View>
 
               {/* Right Content */}
@@ -270,6 +301,7 @@ function Home() {
             <TouchableOpacity
               onPress={() => Presensi("MASUK")}
               style={{ alignItems: "center" }}
+              disabled={!IsLoginTime}
             >
               <View
                 style={{
@@ -289,6 +321,7 @@ function Home() {
             <TouchableOpacity
               onPress={() => Presensi("PULANG")}
               style={{ alignItems: "center" }}
+              disabled={!IsLogoutTime}
             >
               <View
                 style={{
@@ -334,7 +367,7 @@ function Home() {
             </ScrollView>
           </View>
         </View>
-        {invalidLocationModal}
+        {/* {invalidLocationModal} */}
         {gpsActiveModal}
       </SafeScreen>
     );
@@ -348,6 +381,8 @@ function Home() {
     isInvalidLocaltionModal,
     history,
     areaLongitude,
+    IsLoginTime,
+    IsLogoutTime,
   ]);
 
   return renderMain;
