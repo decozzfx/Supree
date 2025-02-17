@@ -32,6 +32,7 @@ function Home({ navigation }: ApplicationScreenProps) {
 
   const [isInvalidLocaltionModal, setIsInvalidLocaltionModal] =
     useState<boolean>(false);
+  console.log("🚀 ~ Home ~ isInvalidLocaltionModal:", isInvalidLocaltionModal);
   const [isGpsActiveModal, setIsGpsActiveModal] = useState<boolean>(false);
   const [IsLoginTime, setIsLoginTime] = useState<boolean>(true);
   const [IsLogoutTime, setIsLogoutTime] = useState<boolean>(true);
@@ -128,6 +129,8 @@ function Home({ navigation }: ApplicationScreenProps) {
   }, []);
 
   const invalidLocationModal = useMemo(() => {
+    if (!isInvalidLocaltionModal) return null;
+
     return (
       <ModalCenter
         style={{ borderRadius: 16 }}
